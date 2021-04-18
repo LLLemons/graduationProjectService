@@ -22,6 +22,7 @@ module.exports = appInfo => {
       auth: { authSource: "test" },
       user: "test",
       pass: "testlh0410",
+      dbName: 'test',
       useUnifiedTopology: true,
     //   autoReconnect:
     }
