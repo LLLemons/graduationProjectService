@@ -12,7 +12,7 @@ class CommonController extends Controller {
     const target = path.join(this.config.baseDir, 'app/public/images', filename);
     const writeStream = fs.createWriteStream(target);
     await pump(stream, writeStream);
-    this.ctx.body = 'http://127.0.1:7001/public/images/' + filename;
+    this.ctx.body = 'http://175.24.95.135:7001/public/images/' + filename;
   }
   async allowJumpDomain() {
     const { request, response, next } = this;
