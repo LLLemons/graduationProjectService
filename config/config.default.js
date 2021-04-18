@@ -20,10 +20,8 @@ module.exports = appInfo => {
     url: 'mongodb://175.24.95.135:28017/test',
     options: {
       useUnifiedTopology: true,
-      autoReconnect: true,
-      reconnectTries: Number.MAX_VALUE,
-      bufferMaxEntries: 0,
-    },
+    //   autoReconnect:
+    }
   };
 
   config.secret = 'user';
