@@ -19,6 +19,9 @@ module.exports = appInfo => {
     // url: 'mongodb://132.232.199.18:27017/MingShined',
     url: 'mongodb://175.24.95.135:28017/test',
     options: {
+      auth: { authSource: "test" },
+      user: "test",
+      pass: "testlh0410",
       useUnifiedTopology: true,
     //   autoReconnect:
     }
