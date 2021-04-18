@@ -1,0 +1,104 @@
+'use strict';
+
+const Service = require('egg').Service;
+
+class ShopcartService extends Service {
+  constructor(ctx) {
+    super(ctx);
+    this.shopcartTansfer = {
+      id: {
+        type: 'string',
+        required: true,
+        allowEmpty: false,
+      },
+      size: {
+        type: 'string',
+        required: true,
+        allowEmpty: false,
+      },
+      quantity: {
+        type: 'number',
+        required: true,
+        allowEmpty: true,
+      },
+    };
+  }
+  async create(payload) {
+    const { ctx } = this;
+    const { id, size, quantity } = payload;
+
+    /**
+     * @name ===========未登录==============
+     */
+    const userId = await ctx.service.user.getUserSession();
+    if (!userId) {
+      ctx.throw('请登录', 401);
+    }
+
+    /**
+     * @name ===========校验参数==============
+     */
+    this.ctx.validate(this.shopcartTansfer);
+
+    /**
+     * @name ===已经添加过相同商品，数量加1===
+     */
+    const shopcartInfo = await ctx.service.shopcart.findOne({
+      'userInfo._id': userId,
+      'goodInfo._id': id,
+      'goodInfo.size': size,
+    });
+    // 若存在，累加数量
+    if (shopcartInfo) {
+      let userInfo = await ctx.service.user.findOne({ _id: userId });
+      userInfo = JSON.parse(JSON.stringify(userInfo));
+      const updateCartInfo = JSON.parse(JSON.stringify(shopcartInfo));
+      updateCartInfo.goodInfo.quantity += quantity;
+      updateCartInfo.userInfo = userInfo;
+      await ctx.model.Shopcart.findByIdAndUpdate(
+        updateCartInfo._id,
+        updateCartInfo
+      );
+      return ctx.service.shopcart.findOne({ _id: updateCartInfo._id });
+    }
+
+    /**
+     * @name ===未添加过相同商品,新增商品===
+     */
+    let userInfo = await ctx.service.user.findOne({ _id: userId });
+    userInfo = JSON.parse(JSON.stringify(userInfo));
+    let goodInfo = await ctx.service.good.findOne({ _id: id });
+    goodInfo = JSON.parse(JSON.stringify(goodInfo));
+    goodInfo = { ...goodInfo, size, quantity: quantity ? quantity : 1 };
+    const result = { userInfo, goodInfo };
+    return ctx.model.Shopcart.create(result);
+  }
+  async findOne(payload) {
+    const { ctx } = this;
+    return ctx.model.Shopcart.findOne(payload);
+  }
+  async query() {
+    const { ctx } = this;
+    /**
+     * @name ===========未登录==============
+     */
+    const userId = await ctx.service.user.getUserSession();
+    if (!userId) {
+      ctx.throw('请登录', 401);
+    }
+    return ctx.model.Shopcart.find({ 'userInfo._id': userId });
+  }
+  async delete(id) {
+    const { ctx } = this;
+    /**
+     * @name ===========未登录==============
+     */
+    const userId = await ctx.service.user.getUserSession();
+    if (!userId) {
+      ctx.throw('请登录', 401);
+    }
+    return ctx.model.Shopcart.findByIdAndDelete(id);
+  }
+}
+
+module.exports = ShopcartService;
