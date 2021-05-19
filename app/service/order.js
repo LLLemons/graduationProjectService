@@ -90,7 +90,7 @@ class OrderService extends Service {
   }
   async queryAll(payload) {
     const { ctx } = this;
-    if (!payload.admin) {
+    if (payload.admin) {
       return this.ctx.model.Order.find();
     }
     const userId = await ctx.service.user.getUserSession();
