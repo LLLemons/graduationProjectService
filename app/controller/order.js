@@ -15,7 +15,7 @@ class OrderController extends Controller {
   }
   async queryAll() {
     const { ctx } = this;
-    const res = await ctx.service.order.queryAll();
+    const res = await ctx.service.order.queryAll(ctx.query);
     ctx.helper.success({ ctx, res });
   }
   async update() {

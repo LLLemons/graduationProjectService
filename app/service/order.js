@@ -88,8 +88,11 @@ class OrderService extends Service {
     }
     return ctx.model.Order.find({ 'userInfo._id': userId });
   }
-  async queryAll() {
+  async queryAll(payload) {
     const { ctx } = this;
+    if (!payload.admin) {
+      return this.ctx.model.Order.find();
+    }
     const userId = await ctx.service.user.getUserSession();
     if (!userId) {
       ctx.throw('请登录', 401);
@@ -97,11 +100,11 @@ class OrderService extends Service {
     return this.ctx.model.Order.find({ 'userInfo._id': userId });
   }
   async update(payload) {
-    const { ctx } = this;
-    const userId = await ctx.service.user.getUserSession();
-    if (!userId) {
-      ctx.throw('请登录', 401);
-    }
+    // const { ctx } = this;
+    // const userId = await ctx.service.user.getUserSession();
+    // if (!userId) {
+    //   ctx.throw('请登录', 401);
+    // }
     return this.ctx.model.Order.findByIdAndUpdate(payload.id, {
       'orderInfo.status': payload.status,
     });
