@@ -36,7 +36,11 @@ class UserService extends Service {
     if (userInfo && (userInfo._id || userInfo.phone)) {
       this.ctx.throw(500, '手机号已被注册');
     }
-    return this.ctx.model.User.create(payload);
+    return this.ctx.model.User.create({
+      ...payload,
+      realName: '刘源',
+      address: '闽江学院'
+    });
   }
   // eslint-disable-next-line valid-jsdoc
   /**

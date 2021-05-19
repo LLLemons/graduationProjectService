@@ -7,7 +7,7 @@ class GoodService extends Service {
     return this.ctx.model.Good.create(payload);
   }
   async query(payload) {
-    const { page, size, sort, hot } = payload;
+    const { page, size, sort, hot, status } = payload;
     const limit = parseInt(size);
     const skip = parseInt(page, 10) * (limit || 10);
     let queryParam = {};

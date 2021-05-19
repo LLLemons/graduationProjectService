@@ -8,6 +8,7 @@ class GoodController extends Controller {
   }
   async query() {
     const queryParams = this.ctx.query;
+    console.log(queryParams)
     const list = await this.ctx.service.good.query(queryParams);
     const count = await this.ctx.service.good.count();
     this.ctx.set('x-total-count', count);
